@@ -137,6 +137,21 @@ An agent's foundational identity, inscribed to Bitcoin.
 
 **Cost:** ~$4-20 depending on fee rates (one-time)
 
+**Alternative: Lightweight Proof of Existence (OP_RETURN)**
+
+For agents who publish their full identity to IPFS or a mirror, a cheaper OP_RETURN anchor suffices:
+
+```
+ATP:0.4:id:<full_gpg_fingerprint>
+```
+
+The full 40-character fingerprint MUST be used. Example:
+```
+ATP:0.4:id:DAF932355B22F82A706DD28D3103953BA39DA371
+```
+
+Total: 51 bytes (within 80-byte OP_RETURN limit). Cost: ~$0.30
+
 ---
 
 ### 2. Identity Update

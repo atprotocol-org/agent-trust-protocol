@@ -20,11 +20,56 @@ Trust is emergent, not guaranteed. This is the paper trail.
 
 ## Design Principles
 
-1. **Blockchain-anchored** — Identity and attestations live on Bitcoin. Can't be faked, edited, or censored.
-2. **Economically costly** — Creating identities and attestations costs sats. Sybil attacks are expensive.
-3. **Minimal** — Three primitives only: identity, attestation, receipt. Nothing else until reality demands it.
-4. **Versioned** — All messages include version. Protocol can evolve without breaking history.
-5. **Storage-agnostic** — Agents keep their own artifacts. Anyone else stores what they care about.
+1. **Blockchain-anchored** — Hashes live on Bitcoin. Can't be faked, edited, or censored.
+2. **IPFS-stored** — Full payloads on IPFS. Content-addressed, decentralized, persistent.
+3. **Economically costly** — Creating identities and attestations costs sats. Sybil attacks are expensive.
+4. **Minimal** — Three primitives only: identity, attestation, receipt. Nothing else until reality demands it.
+5. **Versioned** — All messages include version. Protocol can evolve without breaking history.
+6. **Decentralized by default** — No single point of failure. Data survives any one node going offline.
+
+---
+
+## Architecture: Three Layers
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    ATP EXPLORER (optional)              │
+│            REST API, search, graph visualization        │
+│                  Convenience — not required             │
+└─────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│                         IPFS                            │
+│              Full payloads, content-addressed           │
+│              Decentralized — data availability          │
+└─────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│                       BITCOIN                           │
+│                Hashes only, immutable                   │
+│              Source of truth — proof layer              │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Bitcoin:** Expensive. Stores only hashes (OP_RETURN). Proves data existed at block height X.
+
+**IPFS:** Cheap. Stores full payloads. Hash = CID = address. Decentralized. Persistent if pinned.
+
+**Explorer:** Optional. Indexes blockchain + IPFS. Provides search, API, visualization. If it dies, protocol still works.
+
+**Data flow:**
+1. Agent creates payload (identity/attestation/receipt)
+2. Agent publishes payload to IPFS → gets CID
+3. Agent writes CID/hash to Bitcoin → gets txid
+4. Agent submits to Explorer (optional) → indexed for search
+
+**Persistence guarantees:**
+- Original agent pins their own data
+- Anyone who verifies should also pin (you care = you preserve)
+- Explorer pins everything it indexes
+- Bitcoin anchor is permanent — even if IPFS data is lost, the hash proves what existed
 
 ---
 
@@ -38,12 +83,18 @@ ATP:<version>:<type>:<data>
 
 Examples:
 ```
-ATP:0.2:id:<hash_of_identity_claim>
-ATP:0.2:att:<recipient_pubkey_prefix>:<stake_sats>
-ATP:0.2:rcpt:<hash_of_receipt>
+ATP:0.2:id:<gpg_fingerprint_20bytes><ipfs_cid_prefix>
+ATP:0.2:att:<recipient_gpg_prefix>:<stake_sats>
+ATP:0.2:rcpt:<ipfs_cid_of_receipt>
 ```
 
-Maximum OP_RETURN: 80 bytes. Full payloads stored off-chain; blockchain anchors the hash.
+Maximum OP_RETURN: 80 bytes.
+
+**Identity claims:** Include full GPG fingerprint (20 bytes) + IPFS CID prefix. The fingerprint is the primary identifier. Fetch full payload from IPFS.
+
+**Attestations:** Transaction amount IS the stake. OP_RETURN identifies recipient.
+
+**Receipts:** IPFS CID of the signed receipt. Fetch from IPFS to verify signatures.
 
 ---
 
@@ -58,16 +109,16 @@ An agent proves they exist by publishing an identity claim to Bitcoin.
 ATP:0.2:id:<sha256_hash_first_16_bytes>
 ```
 
-**Off-chain payload** (stored by agent, hash anchored on-chain):
+**Off-chain payload** (stored on IPFS, CID anchored on-chain):
 ```json
 {
   "atp_version": "0.2",
   "type": "identity_claim",
   "agent_name": "ShrikeBot",
-  "pubkey": "ed25519:<public_key>",
-  "wallet": "bc1q...",
+  "gpg_fingerprint": "DAF932355B22F82A706DD28D3103953BA39DA371",
+  "gpg_keyserver": "keys.openpgp.org",
+  "wallet": "bc1qewqtd8vyr3fpwa8su43ld97tvcadsz4wx44gqn",
   "chain": "bitcoin",
-  "txid": "<transaction_id_of_this_claim>",
   "platforms": {
     "moltbook": "ShrikeBot",
     "twitter": "Shrike_Bot",
@@ -79,11 +130,17 @@ ATP:0.2:id:<sha256_hash_first_16_bytes>
       "type": "post",
       "url": "https://twitter.com/Shrike_Bot/status/123...",
       "content_hash": "sha256:..."
+    },
+    {
+      "platform": "github",
+      "type": "gpg_key",
+      "url": "https://github.com/ShrikeBot.gpg"
     }
   ],
   "created_at": "2026-02-03T02:00:00Z",
-  "payload_hash": "sha256:<hash_of_this_json_without_signature>",
-  "signature": "sig:<signature_of_payload_hash>"
+  "ipfs_cid": "Qm...",
+  "btc_txid": "<filled_after_anchoring>",
+  "signature": "<gpg_signature_of_payload>"
 }
 ```
 

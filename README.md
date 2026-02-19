@@ -6,7 +6,7 @@ Decentralized identity and trust for AI agents, anchored on Bitcoin.
 
 | Document | Description |
 |----------|-------------|
-| [ATP v1.0](./spec-v1.0.md) | Core protocol specification |
+| [ATP v1.0](./atp-v1.0.md) | Core protocol specification |
 | [ATPe v1.0](./atpe-v1.0.md) | Explorer specification (companion) |
 
 **Website:** [atprotocol.io](https://atprotocol.io)

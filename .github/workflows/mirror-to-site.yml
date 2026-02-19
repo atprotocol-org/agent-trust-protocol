@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'aip-*.md'
-      - 'spec-*.md'
+      - 'atp-*.md'
       - 'atpe-*.md'
 
 jobs:
@@ -32,13 +32,8 @@ jobs:
 
           # Sync specs
           mkdir -p docs/spec
-          cp $GITHUB_WORKSPACE/spec-*.md docs/spec/
+          cp $GITHUB_WORKSPACE/atp-v*.md docs/spec/
           cp $GITHUB_WORKSPACE/atpe-*.md docs/spec/
-
-          # Rename spec files to match site convention (spec-v1.0.md -> atp-v1.0.md)
-          if [ -f docs/spec/spec-v1.0.md ]; then
-            mv docs/spec/spec-v1.0.md docs/spec/atp-v1.0.md
-          fi
 
           if git diff --quiet && git diff --cached --quiet; then
             echo "No changes to mirror"

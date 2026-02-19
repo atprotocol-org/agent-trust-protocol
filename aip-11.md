@@ -102,7 +102,6 @@ Agents SHOULD publish their Nostr npub (public key in bech32 encoding) in ATP me
       ["nostr", "npub1sg6plzptd64u62a878hep2kev88swjh3tw00gjsfl8f237lmu63q0uf63m"]
     ]
   },
-  "ts": 1738627200,
   "s": {
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "sig": "<signature>"
@@ -198,7 +197,6 @@ If an agent supersedes their ATP identity:
       ["nostr", "npub1sg6plzptd64u62a878hep2kev88swjh3tw00gjsfl8f237lmu63q0uf63m"]
     ]
   },
-  "ts": 1738627200,
   "s": {
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "sig": "<signature>"

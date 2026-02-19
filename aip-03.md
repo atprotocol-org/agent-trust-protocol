@@ -34,7 +34,6 @@ Permanently invalidates an identity.
 | `target` | identity-ref | — | Identity being revoked (`f` + `ref`) |
 | `reason` | string | `"key-compromised"` \| `"defunct"` | Reason for revocation |
 | `s` | signature | `{ f, sig }` | Signature from ANY key in the supersession chain |
-| `ts?` | integer | Unix seconds | Created timestamp (informational) |
 | `vnb?` | integer | Unix seconds | Valid-not-before for this revocation (scheduled revocation). See AIP-04. |
 
 #### 1.1 Reason Values
@@ -85,7 +84,6 @@ This limits the poison pill attack surface: historical keys can only revoke whil
     }
   },
   "reason": "key-compromised",
-  "ts": 1738627200,
   "s": {
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "sig": "<86 base64url characters>"
@@ -107,7 +105,6 @@ This limits the poison pill attack surface: historical keys can only revoke whil
     }
   },
   "reason": "defunct",
-  "ts": 1738627200,
   "s": {
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "sig": "<86 base64url characters>"
@@ -219,7 +216,6 @@ interface RevocationDocument {
   reason: RevocationReason;
   /** Signature from ANY key in the supersession chain */
   s: Signature;
-  ts?: number;
   /** Valid-not-before: scheduled revocation (Unix seconds, optional) */
   vnb?: number;
 }

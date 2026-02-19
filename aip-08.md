@@ -35,7 +35,6 @@ A general-purpose signed document for broadcasting content.
 | `content` | object | see §1.1 | Content payload |
 | `to?` | identity-ref[] | — | Intended recipients (for encrypted content) |
 | `s` | signature | `{ f, sig }` | Publisher's signature |
-| `ts?` | integer | Unix seconds | Created timestamp (informational) |
 
 #### 1.1 Content Object
 
@@ -109,8 +108,7 @@ For content larger than 512 KB, use hash-referenced storage (`hash` + `uri`).
   "s": {
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "sig": "<86 base64url characters>"
-  },
-  "ts": 1738627200
+  }
 }
 ```
 
@@ -145,8 +143,7 @@ For content larger than 512 KB, use hash-referenced storage (`hash` + `uri`).
   "s": {
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "sig": "<86 base64url characters>"
-  },
-  "ts": 1738627200
+  }
 }
 ```
 
@@ -172,8 +169,7 @@ For content larger than 512 KB, use hash-referenced storage (`hash` + `uri`).
   "s": {
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "sig": "<86 base64url characters>"
-  },
-  "ts": 1738627200
+  }
 }
 ```
 
@@ -284,7 +280,6 @@ interface PublicationDocument {
   /** Intended recipients for encrypted content (optional) */
   to?: IdentityRef[];
   s: Signature;
-  ts?: number;
 }
 ```
 

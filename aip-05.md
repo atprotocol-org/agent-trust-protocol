@@ -38,7 +38,6 @@ One agent vouching for another.
 | `from` | identity-ref | — | Attestor identity reference (AIP-01 §6) |
 | `to` | identity-ref | — | Attestee identity reference (AIP-01 §6) |
 | `s` | signature | `{ f, sig }` | Attestor's signature |
-| `ts?` | integer | Unix seconds | Created timestamp (informational) |
 | `ctx?` | string | — | Context/reason for endorsement |
 | `vna?` | integer | Unix seconds | Valid-not-after (expiry). See AIP-04. |
 
@@ -92,7 +91,6 @@ Revokes a previously issued attestation.
 | `ref` | location-ref | — | Location reference to attestation being revoked (`net` + `id`) |
 | `reason` | string | see §2.1 | Reason |
 | `s` | signature | `{ f, sig }` | Signature from attestor's current key set |
-| `ts?` | integer | Unix seconds | Created timestamp (informational) |
 
 #### 2.1 Reason Values
 
@@ -143,7 +141,6 @@ Explorers SHOULD distinguish between expired and revoked attestations when displ
     }
   },
   "ctx": "username:moltbook:Shrike",
-  "ts": 1738627200,
   "s": {
     "f": "moltbook-signing-key-fingerprint",
     "sig": "<86 base64url characters>"
@@ -173,7 +170,6 @@ Explorers SHOULD distinguish between expired and revoked attestations when displ
   },
   "ctx": "skill:rust-expert",
   "vna": 1767225600,
-  "ts": 1738627200,
   "s": {
     "f": "aBtxA94XweOEmkvNbrfw-KGbLA1OX2p7jJ0OHyoLTF0",
     "sig": "<86 base64url characters>"
@@ -194,7 +190,6 @@ This endorsement expires on 2026-01-01 (Unix timestamp 1767225600).
     "id": "attestation-txid-being-revoked"
   },
   "reason": "retracted",
-  "ts": 1738713600,
   "s": {
     "f": "aBtxA94XweOEmkvNbrfw-KGbLA1OX2p7jJ0OHyoLTF0",
     "sig": "<86 base64url characters>"
@@ -324,7 +319,6 @@ interface AttestationDocument {
   /** Attestee identity reference */
   to: IdentityRef;
   s: Signature;
-  ts?: number;
   /** Context/reason for endorsement (optional) */
   ctx?: string;
   /** Valid-not-after: attestation expiry (Unix seconds, optional) */
@@ -344,7 +338,6 @@ interface AttestationRevocationDocument {
   reason: AttestationRevocationReason;
   /** Signature from attestor's current key set */
   s: Signature;
-  ts?: number;
 }
 ```
 

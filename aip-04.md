@@ -44,7 +44,6 @@ For supersession documents:
 
 ### 2. Canonical Time Source: Bitcoin Median Time Past (MTP)
 
-Because `ts` is creator-supplied, validity windows MUST be evaluated against a chain-derived time source.
 
 For Bitcoin (`ref.net = bip122:000000000019d6689c085ae165831e93`), implementations MUST use **Median Time Past (MTP)** of the block that confirms the inscription.
 
@@ -154,7 +153,6 @@ When an identity is `expired`:
     }
   ],
   "vna": 1767225600,
-  "ts": 1738627200,
   "s": {
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "sig": "<86 base64url characters>"
@@ -186,7 +184,6 @@ This identity expires on 2026-01-01 00:00:00 UTC (Unix timestamp 1767225600). Af
   ],
   "reason": "key-rotation",
   "vnb": 1740000000,
-  "ts": 1738627200,
   "s": [
     {
       "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
@@ -217,7 +214,6 @@ This supersession is inscribed early but doesn't take effect until Unix timestam
   },
   "reason": "defunct",
   "vnb": 1767225600,
-  "ts": 1738627200,
   "s": {
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "sig": "<86 base64url characters>"

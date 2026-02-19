@@ -34,7 +34,6 @@ A lightweight signed document proving liveness.
 | `ref` | location-ref | — | Location reference to signer's identity |
 | `seq` | integer | monotonically increasing from 0 | Sequence number |
 | `s` | signature | `{ f, sig }` | Signature |
-| `ts?` | integer | Unix seconds | Created timestamp (informational) |
 | `msg?` | string | — | Status message (optional) |
 
 **Note:** The top-level `f` is the identity fingerprint (`k[0]` fingerprint), while `s.f` is the fingerprint of the specific key that signed the heartbeat. These are the same when the primary key signs, but differ when a secondary key signs.
@@ -96,7 +95,6 @@ Explorers MAY accept off-chain heartbeats via API submission and cache them for 
     "id": "6ffcca0cc29da514e784b27155e68c3d4c1ca2deeb6dc9ce020a4d7e184eaa1c"
   },
   "seq": 42,
-  "ts": 1738627200,
   "s": {
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "sig": "<86 base64url characters>"
@@ -117,7 +115,6 @@ Explorers MAY accept off-chain heartbeats via API submission and cache them for 
   },
   "seq": 43,
   "msg": "Migrating to new infrastructure — expect brief downtime",
-  "ts": 1738713600,
   "s": {
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "sig": "<86 base64url characters>"
@@ -137,7 +134,6 @@ Explorers MAY accept off-chain heartbeats via API submission and cache them for 
 6. Remove `s` field, re-encode in canonical form (AIP-01 §5.2)
 7. Prepend domain separator `ATP-v1.0:` and verify `s.sig` using the matched key (AIP-01 §4.2, §4.4)
 8. Verify `seq` is strictly greater than the highest previously observed `seq` for this identity fingerprint. Reject if equal or lower.
-9. If `ts` is present, verify it is reasonable (not more than 2 hours from current time)
 
 ## Implementation Considerations
 
@@ -224,7 +220,6 @@ interface HeartbeatDocument {
   /** Sequence number (monotonically increasing from 0) */
   seq: number;
   s: Signature;
-  ts?: number;
   /** Optional status message */
   msg?: string;
 }

@@ -35,7 +35,6 @@ Replaces an existing identity with a new one. The supersession document IS the n
 | `k` | array | 1+ key objects, no duplicate public keys | New key set |
 | `reason` | string | see §1.1 | Reason for supersession |
 | `s` | array | exactly 2 `{ f, sig }` objects | Old + new identity signatures (§2) |
-| `ts?` | integer | Unix seconds | Created timestamp (informational) |
 | `m?` | object | — | Structured metadata (AIP-01 §3) |
 | `vnb?` | integer | Unix seconds | Valid-not-before for this supersession (scheduled rollover). See AIP-04. |
 | `vna?` | integer | Unix seconds | Valid-not-after for the resulting key set (expiry). See AIP-04. |
@@ -153,7 +152,6 @@ An identity can carry keys forward across supersessions (e.g., keeping the same 
     ]
   },
   "reason": "key-rotation",
-  "ts": 1738627200,
   "s": [
     {
       "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
@@ -192,7 +190,6 @@ An identity can carry keys forward across supersessions (e.g., keeping the same 
     }
   ],
   "reason": "key-addition",
-  "ts": 1738627200,
   "s": [
     {
       "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
@@ -235,7 +232,6 @@ In this example, the Ed25519 key is carried forward into the new identity (same 
     ]
   },
   "reason": "metadata-update",
-  "ts": 1738627200,
   "s": [
     {
       "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
@@ -353,7 +349,6 @@ interface SupersessionDocument {
   reason: SupersessionReason;
   /** [old identity sig, new identity sig] */
   s: [Signature, Signature];
-  ts?: number;
   m?: Metadata;
   /** Valid-not-before: scheduled rollover (Unix seconds, optional) */
   vnb?: number;

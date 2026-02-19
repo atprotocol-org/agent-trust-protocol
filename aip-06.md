@@ -34,7 +34,6 @@ Mutually-signed record of an exchange.
 | `ex` | object | — | Exchange details (§1.2) |
 | `out` | string | see §1.3 | Outcome |
 | `s` | array | `{ f, sig }[]` — same length as `p` | All party signatures (§2) |
-| `ts?` | integer | Unix seconds | Created timestamp (informational) |
 
 #### 1.1 Party Object
 
@@ -136,7 +135,6 @@ Explorers SHOULD display receipt history chronologically and note when receipts 
     "val": 25000
   },
   "out": "completed",
-  "ts": 1738627200,
   "s": [
     {
       "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
@@ -180,7 +178,6 @@ Explorers SHOULD display receipt history chronologically and note when receipts 
     "val": 100000
   },
   "out": "disputed",
-  "ts": 1738627200,
   "s": [
     {
       "f": "buyer-fingerprint",
@@ -304,7 +301,6 @@ interface ReceiptDocument {
   out: Outcome;
   /** Signatures (same length as p; s[i] from p[i]) */
   s: Signature[];
-  ts?: number;
 }
 ```
 

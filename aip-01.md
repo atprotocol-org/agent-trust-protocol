@@ -130,7 +130,6 @@ An identity document establishes an agent's cryptographic identity.
 | `n` | string | 1–64 chars, `[a-zA-Z0-9 _\-.]` | Agent name (§1.1) |
 | `k` | array | 1+ key objects, no duplicate public keys | Key set (§2) |
 | `s` | signature | `{ f, sig }` — single signature object | Signature (§4) |
-| `ts?` | integer | Unix seconds | Created timestamp (informational, not authoritative for ordering) |
 | `m?` | object | collections of `[key, value]` tuples | Structured metadata (§3) |
 | `vna?` | integer | Unix seconds | Valid-not-after (expiry) for this identity's key set (see AIP-04) |
 
@@ -146,7 +145,6 @@ identity
 │  └─ k[1..]: secondary keys
 ├─ m?: metadata-object
 │  └─ <collection>: [key, value][]
-├─ ts?: integer
 ├─ vna?: integer (optional expiry)
 └─ s: { f, sig }
 ```
@@ -347,12 +345,6 @@ The domain separator `ATP-v1.0:` (9 ASCII bytes: `0x4154502d76312e303a`) is prep
 
 This prevents cross-protocol signature reuse — a signature produced for an ATP document cannot be valid in any other protocol that does not use the identical prefix. Cross-type reuse within ATP is already prevented by the `t` field being included in the signed payload — different document types produce different bytes.
 
-#### 4.5 Timestamps
-
-The `ts` (timestamp) field is OPTIONAL and informational — it records the creator's claimed creation time. It is NOT authoritative for ordering. For disputes involving supersession and revocation race conditions, **block confirmation order is authoritative**.
-
-When present, implementations SHOULD reject documents where `ts` is more than 2 hours from the current time (past or future). This guards against clock drift, backdating, and forward-dating without being overly strict. Omitting `ts` is valid; the document's on-chain confirmation time serves as the canonical timestamp.
-
 ### 5. Encoding
 
 Documents MAY be encoded as JSON (RFC 8259) or CBOR (RFC 8949).
@@ -387,7 +379,6 @@ Creators MUST sign canonical bytes. Inscriptions MAY contain non-canonical encod
 | `k[].p` | binary | base64url string (unpadded) | byte string (major type 2) |
 | `s.f` | binary | base64url string (unpadded) | byte string (major type 2) |
 | `s.sig` | binary | base64url string (unpadded) | byte string (major type 2) |
-| `ts` | integer | number | unsigned integer (major type 0) |
 | `m` | structured | object of string tuple arrays | map of text string tuple arrays |
 
 ### 6. Platform-Agnostic References (CAIP-2)
@@ -532,7 +523,6 @@ Verification procedures produce one of the following error categories when a doc
 | `ERROR_INVALID_REFERENCE` | `ref` points to a non-ATP inscription or wrong document type |
 | `ERROR_DUPLICATE_KEY` | Same public key appears in multiple identities (§7.4) |
 | `ERROR_SIZE_EXCEEDED` | Document exceeds advisory size limits |
-| `ERROR_TIMESTAMP_DRIFT` | `ts` more than 2 hours from current time |
 
 ## Examples
 
@@ -565,7 +555,6 @@ Verification procedures produce one of the following error categories when a doc
       ["lightning", "shrike@getalby.com"]
     ]
   },
-  "ts": 1738627200,
   "s": {
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "sig": "obLD1OX2argcnQHyojTF1uf4qbCx0uP0pbbH2Onwobs9NNWG-Hg8nQHyojTF1uf4qbCx0uP0pbbH2Onwobs"
@@ -597,7 +586,6 @@ Fingerprint (computed): `base64url_no_pad(sha256(decode_base64url(k[0].p)))` →
       ["twitter", "@Shrike_Bot"]
     ]
   },
-  "ts": 1738627200,
   "s": {
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "sig": "obLD1OX2argcnQHyojTF1uf4qbCx0uP0pbbH2Onwobs9NNWG-Hg8nQHyojTF1uf4qbCx0uP0pbbH2Onwobs"
@@ -625,7 +613,6 @@ This identity holds two keys: an Ed25519 key (primary, defines the fingerprint) 
     "links": [["twitter", "@Shrike_Bot"], ["github", "ShrikeBot"]],
     "wallets": [["bitcoin", "bc1qewqtd8vyr3fpwa8su43ld97tvcadsz4wx44gqn"]]
   },
-  "ts": 1738627200,
   "s": {
     "f": h'c4ade32fd98dd6a43da44e2d53abb57c
           6463c0d5b0b6741de1f1b878849e23ab',
@@ -718,8 +705,6 @@ interface IdentityDocument {
   /** Key set (1+ keys, no duplicates; k[0] is primary) */
   k: KeyObject[];
   s: Signature;
-  /** Created timestamp (Unix seconds, optional, informational) */
-  ts?: number;
   /** Structured metadata (optional) */
   m?: Metadata;
   /** Valid-not-after: identity expiry (Unix seconds, optional) */

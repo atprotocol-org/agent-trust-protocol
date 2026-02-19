@@ -47,7 +47,6 @@ Agents that provide A2A services SHOULD publish their A2A endpoint base URL in t
       ["a2a", "https://shrike.example.com"]
     ]
   },
-  "ts": 1738627200,
   "s": {
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "sig": "<signature>"

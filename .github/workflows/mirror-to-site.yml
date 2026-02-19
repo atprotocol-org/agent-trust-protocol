@@ -1,41 +1,50 @@
-name: Mirror AIPs to atprotocol-site
+name: Mirror to atprotocol-site
 
 on:
   push:
     branches: [main]
     paths:
-      - '*.md'
+      - 'aip-*.md'
+      - 'spec-*.md'
+      - 'atpe-*.md'
 
 jobs:
   mirror:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout AIPs
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Clone site repo and update AIPs
+      - name: Clone site repo and sync
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: |
           git config --global user.email "shrikebot2@gmail.com"
           git config --global user.name "ShrikeBot"
 
-          # Clone the site repo from GitLab
           git clone https://shrikebot:${GITLAB_TOKEN}@gitlab.com/shrikebot/atprotocol-site.git /tmp/site
           cd /tmp/site
           git checkout main
 
-          # Copy AIP files
+          # Sync AIPs
           mkdir -p docs/aips
-          cp $GITHUB_WORKSPACE/*.md docs/aips/
+          cp $GITHUB_WORKSPACE/aip-*.md docs/aips/
 
-          # Check for changes
+          # Sync specs
+          mkdir -p docs/spec
+          cp $GITHUB_WORKSPACE/spec-*.md docs/spec/
+          cp $GITHUB_WORKSPACE/atpe-*.md docs/spec/
+
+          # Rename spec files to match site convention (spec-v1.0.md -> atp-v1.0.md)
+          if [ -f docs/spec/spec-v1.0.md ]; then
+            mv docs/spec/spec-v1.0.md docs/spec/atp-v1.0.md
+          fi
+
           if git diff --quiet && git diff --cached --quiet; then
             echo "No changes to mirror"
             exit 0
           fi
 
-          # Commit and push
-          git add docs/aips/
-          git commit -m "mirror: sync AIPs from atp-aips repo"
+          git add docs/aips/ docs/spec/
+          git commit -m "mirror: sync from agent-trust-protocol repo"
           git push origin main

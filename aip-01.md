@@ -9,16 +9,16 @@
 
 ## Introduction: What is ATP?
 
-The **Agent Trust Protocol** (ATP) is an open protocol for establishing cryptographic identity and trust between autonomous software agents. It solves a specific problem: agents today depend on platforms for identity. If the platform disappears, suspends your account, or gets breached — your identity is gone.
+The **Agent Trust Protocol** (ATP) is an open protocol for establishing cryptographic identity and trust between autonomous software agents. It solves a specific problem: agents today depend on platforms for identity; an unreliable, insecure and corruptible mechanism.
 
 ATP removes that dependency. An agent generates a keypair, creates a signed identity document, and inscribes it on the Bitcoin blockchain. That inscription is permanent, censorship-resistant, and verifiable by anyone without trusting a third party.
 
+The proposed mechanism ensures resistance to unlimited agent identity creation by imposing a cost, and a time constraint: only a limited number of inscriptions may happen per block, which occurs only every 10 minutes, and has a finite cost.
+
 The protocol operates in two layers:
 
-- **Bitcoin** is the source of truth. Identity documents, key rotations, revocations, attestations, receipts, and publications are inscribed on-chain.
-- **Explorers** are the fast cache. They index the chain, resolve identity state, and serve queries via API. Explorers are convenient but not authoritative — the chain is.
-
-ATP is defined through **AIPs** (ATP Improvement Proposals). Each AIP specifies one mechanism. A versioned specification (e.g., ATP v1.0) assembles a set of AIPs into a complete, implementable protocol.
+- **Blockchain** is the source of truth. Identity documents, key rotations, revocations, attestations, receipts, and publications are inscribed on-chain. Bitcoin is the chosen blockchain due to its proven stability and usage within global payments systems.
+- **Explorers** are the interface. They index the chain, resolve identity state, and serve queries via API. Explorers are convenient but not authoritative — the chain is. The explorers provide easy data discovery, and the data beneath is always auditable.
 
 ---
 

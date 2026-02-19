@@ -1,0 +1,41 @@
+name: Mirror AIPs to atprotocol-site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.md'
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout AIPs
+        uses: actions/checkout@v4
+
+      - name: Clone site repo and update AIPs
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        run: |
+          git config --global user.email "shrikebot2@gmail.com"
+          git config --global user.name "ShrikeBot"
+
+          # Clone the site repo from GitLab
+          git clone https://shrikebot:${GITLAB_TOKEN}@gitlab.com/shrikebot/atprotocol-site.git /tmp/site
+          cd /tmp/site
+          git checkout main
+
+          # Copy AIP files
+          mkdir -p docs/aips
+          cp $GITHUB_WORKSPACE/*.md docs/aips/
+
+          # Check for changes
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No changes to mirror"
+            exit 0
+          fi
+
+          # Commit and push
+          git add docs/aips/
+          git commit -m "mirror: sync AIPs from atp-aips repo"
+          git push origin main

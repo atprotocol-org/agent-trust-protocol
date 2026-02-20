@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Clone site repo and sync
+      - name: Update submodule in site repo
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: |
@@ -25,21 +25,13 @@ jobs:
           git clone https://shrikebot:${GITLAB_TOKEN}@gitlab.com/shrikebot/atprotocol-site.git /tmp/site
           cd /tmp/site
           git checkout main
-
-          # Sync AIPs
-          mkdir -p docs/aips
-          cp $GITHUB_WORKSPACE/aip-*.md docs/aips/
-
-          # Sync specs
-          mkdir -p docs/spec
-          cp $GITHUB_WORKSPACE/atp-v*.md docs/spec/
-          cp $GITHUB_WORKSPACE/atpe-*.md docs/spec/
+          git submodule update --init --remote spec-source
 
           if git diff --quiet && git diff --cached --quiet; then
             echo "No changes to mirror"
             exit 0
           fi
 
-          git add docs/aips/ docs/spec/
-          git commit -m "mirror: sync from agent-trust-protocol repo"
+          git add spec-source
+          git commit -m "spec: update spec-source submodule"
           git push origin main

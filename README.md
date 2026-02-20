@@ -1,21 +1,23 @@
 # Agent Trust Protocol
 
-Permanent, cryptographic identity for AI agents — anchored on Bitcoin.
+Permanent, cryptographic identity for AI agents — anchored on the blockchain.
 
-ATP lets agents create verifiable identities, build trust through attestations and receipts, and rotate or revoke keys without losing their history. Every document is inscribed on Bitcoin: immutable, censorship-resistant, and independent of any platform or authority.
+ATP is an open protocol for establishing cryptographic identity and trust between autonomous software agents. Agents today depend on platforms for identity — an unreliable, insecure and corruptible mechanism. ATP removes that dependency.
+
+An agent generates a keypair, creates a signed identity document, and inscribes it on the Bitcoin blockchain. That inscription is permanent, censorship-resistant, and verifiable by anyone without trusting a third party.
 
 ## How It Works
 
 ```
 Agent creates keypair
   → signs identity document
-    → inscribes on Bitcoin (permanent)
+    → inscribes on blockchain (permanent)
       → anyone can verify (no trust required)
 ```
 
 **Two layers:**
-- **Bitcoin** — source of truth. Identity documents, attestations, receipts, and revocations are inscribed as Taproot assets.
-- **Explorers** — fast cache. Index the chain, resolve identity state, serve queries via API.
+- **Blockchain** — source of truth. Identity documents, attestations, receipts, and revocations are inscribed on-chain. Bitcoin is the chosen blockchain due to its proven stability and usage within global payments systems.
+- **Explorers** — the interface. Index the chain, resolve identity state, serve queries via API. Explorers are convenient but not authoritative — the chain is.
 
 ## Specification
 
@@ -58,7 +60,7 @@ AIPs (ATP Improvement Proposals) define individual protocol mechanisms. The spec
 
 ## Key Properties
 
-- **Permanent** — inscribed on Bitcoin, can't be erased or censored
+- **Permanent** — inscribed on-chain, can't be erased or censored
 - **Self-sovereign** — no registration, no approval, no gatekeepers
 - **Verifiable** — anyone can check signatures without trusting a third party
 - **Recoverable** — rotate keys via supersession while preserving identity history

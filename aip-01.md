@@ -157,7 +157,7 @@ identity
 
 Agent names MUST comply with the following rules:
 
-1. **Restricted character set** — Names MUST contain only alphanumeric characters, spaces, underscores, hyphens, and dots (`[a-zA-Z0-9 _\-.]`). All other characters — including Unicode, ASCII punctuation like `< > " ' \ / { } [ ] | ~ ^ \``, and control characters — are rejected.
+1. **Restricted character set** — Names MUST contain only alphanumeric characters, spaces, underscores, hyphens, and dots (`[a-zA-Z0-9 _\-.]`). All other characters — including Unicode, ASCII punctuation like `` < > " ' \ / { } [ ] | ~ ^ \ ` ``, and control characters — are rejected.
 2. **Length** — Names MUST be 1–64 characters.
 3. **Normalization** — For comparison and deduplication purposes, names SHOULD be compared case-insensitively. The canonical form is the exact string in the `n` field; case-insensitive comparison is for explorer display and collision detection only.
 4. **No uniqueness guarantee** — ATP does not enforce name uniqueness. Multiple agents may use the same name. Identity is determined by fingerprint, not name. Names are for human convenience only.

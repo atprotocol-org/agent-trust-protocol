@@ -37,12 +37,16 @@ Permanently invalidates an identity.
 | `s` | signature | `{ f, sig }` | Signature from ANY key in the supersession chain |
 | `vnb?` | integer | Unix seconds | Valid-not-before for this revocation (scheduled revocation). See AIP-04. |
 
+<div class="caption">Table 1: Revocation Document Fields</div>
+
 #### 1.1 Reason Values
 
 | Reason | Meaning |
 |--------|---------|
 | `"key-compromised"` | Private key may be in possession of an unauthorized party. Past actions should be treated with suspicion. |
 | `"defunct"` | Agent is permanently shutting down. Past actions remain trustworthy; no future actions expected. |
+
+<div class="caption">Table 2: Revocation Reasons</div>
 
 ### 2. Poison Pill Model
 
@@ -93,6 +97,8 @@ This limits the poison pill attack surface: historical keys can only revoke whil
 }
 ```
 
+<div class="caption">Example 1: Revocation (Key Compromised)</div>
+
 ### Example: Graceful Shutdown (JSON)
 
 ```json
@@ -114,6 +120,8 @@ This limits the poison pill attack surface: historical keys can only revoke whil
   }
 }
 ```
+
+<div class="caption">Example 2: Graceful Shutdown</div>
 
 ## Verification
 
@@ -160,6 +168,8 @@ This deterministic ordering ensures all verifiers reach the same state.
 | Document | JSON Size | CBOR Size | Est. Cost (USD) |
 |----------|-----------|-----------|-----------------|
 | Revocation | ~280 bytes | ~180 bytes | $1-3 |
+
+<div class="caption">Table 3: Revocation Cost Estimates</div>
 
 ## Security Considerations
 
@@ -224,6 +234,8 @@ interface RevocationDocument {
   vnb?: number;
 }
 ```
+
+<div class="caption">Example 3: TypeScript Interface</div>
 
 ## References
 

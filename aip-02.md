@@ -40,6 +40,8 @@ Replaces an existing identity with a new one. The supersession document IS the n
 | `vnb?` | integer | Unix seconds | Valid-not-before for this supersession (scheduled rollover). See AIP-04. |
 | `vna?` | integer | Unix seconds | Valid-not-after for the resulting key set (expiry). See AIP-04. |
 
+<div class="caption">Table 1: Supersession Document Fields</div>
+
 When a document references an identity via `ref`, the resolved inscription may have `t: "id"` or `t: "super"`. Both are valid identity documents. Verifiers extract `n`, `k`, `m` from the resolved document regardless of type.
 
 #### 1.1 Reason Values
@@ -52,6 +54,8 @@ When a document references an identity via `ref`, the resolved inscription may h
 | `"metadata-update"` | Name or metadata change without key change |
 | `"key-addition"` | Adding a new key to a multi-key identity |
 | `"key-removal"` | Removing a key from a multi-key identity |
+
+<div class="caption">Table 2: Supersession Reasons</div>
 
 ### 2. Dual Signature Requirement
 
@@ -167,6 +171,8 @@ An identity can carry keys forward across supersessions (e.g., keeping the same 
 }
 ```
 
+<div class="caption">Example 1: Key Rotation</div>
+
 ### Example 2: Adding a Dilithium Key (JSON)
 
 ```json
@@ -205,6 +211,8 @@ An identity can carry keys forward across supersessions (e.g., keeping the same 
   ]
 }
 ```
+
+<div class="caption">Example 2: Adding a Dilithium Key</div>
 
 In this example, the Ed25519 key is carried forward into the new identity (same key, now `k[0]`), and a Dilithium key is added as `k[1]`. Both signatures are from the Ed25519 key since it appears in both the old and new key sets. The identity fingerprint remains unchanged because `k[0]` is the same key.
 
@@ -248,6 +256,8 @@ In this example, the Ed25519 key is carried forward into the new identity (same 
   ]
 }
 ```
+
+<div class="caption">Example 3: Metadata Update</div>
 
 Same key, new name and metadata. Signatures are identical for deterministic algorithms.
 
@@ -294,6 +304,8 @@ Recommended data model:
 |----------|-----------|-----------|-----------------|
 | Supersession (single key → single key) | ~550 bytes | ~380 bytes | $2-5 |
 | Supersession (adding Dilithium key) | ~3,400 bytes | ~2,500 bytes | $5-15 |
+
+<div class="caption">Table 3: Supersession Cost Estimates</div>
 
 ## Security Considerations
 
@@ -361,6 +373,8 @@ interface SupersessionDocument {
   vna?: number;
 }
 ```
+
+<div class="caption">Example 4: TypeScript Interface</div>
 
 ## References
 

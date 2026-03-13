@@ -62,6 +62,8 @@ Every AIP MUST begin with a header containing:
 | **Replaces** | No | AIP number(s) this document supersedes |
 | **Replaced-By** | No | AIP number that supersedes this document |
 
+<div class="caption">Table 1: AIP Header Fields</div>
+
 ### Status Lifecycle
 
 ```
@@ -72,6 +74,8 @@ Draft ──→ Review ──→ Final
 
 Final ──→ Replaced (by a new AIP)
 ```
+
+<div class="caption">Figure 1: AIP Status Lifecycle</div>
 
 - **Draft** — Under active development. May change significantly. Edits are made freely.
 - **Review** — Stable enough for implementation feedback. Only non-breaking changes expected.
@@ -136,6 +140,8 @@ An identity document establishes an agent's cryptographic identity.
 | `m?` | object | collections of `[key, value]` tuples | Structured metadata (§3) |
 | `vna?` | integer | Unix seconds | Valid-not-after (expiry) for this identity's key set (see AIP-04) |
 
+<div class="caption">Table 2: Identity Document Fields</div>
+
 ```
 identity
 ├─ v: 1
@@ -152,6 +158,8 @@ identity
 ├─ vna?: integer (optional expiry)
 └─ s: { f, sig }
 ```
+
+<div class="caption">Figure 2: Identity Document Structure</div>
 
 #### 1.1 Name Rules
 
@@ -180,6 +188,8 @@ ATP supports **ed25519**, **secp256k1**, **dilithium**, and **falcon** key types
 | `dilithium` | ML-DSA-65 (FIPS 204) | 1,952 bytes | 3,293 bytes | SHA-384 |
 | `falcon` | FALCON-512 | 897 bytes | ~666 bytes | SHA-384 |
 
+<div class="caption">Table 3: Supported Key Types</div>
+
 #### 2.2 Key Object Format
 
 The `k` field is an array of key objects. Each key object has the following structure:
@@ -188,6 +198,8 @@ The `k` field is an array of key objects. Each key object has the following stru
 |-------|------|-------------|-------------|
 | `t` | string | `"ed25519"` \| `"secp256k1"` \| `"dilithium"` \| `"falcon"` | Key type code |
 | `p` | binary | Size per §2.1 | Public key |
+
+<div class="caption">Table 4: Key Object Fields</div>
 
 The first key in the array (`k[0]`) is the **primary key**. The identity fingerprint is computed from `k[0].p` (§2.3). Additional keys (`k[1]`, `k[2]`, ...) are **secondary keys** — they can sign any document on behalf of this identity, but they do not define the identity fingerprint.
 
@@ -256,6 +268,8 @@ The tuple format keeps inscriptions compact — no field name overhead per entry
 | `keys` | Cryptographic key fingerprints (informational, not used for ATP signing) | `ssh-ed25519`, `gpg`, `pgp`, `nostr` |
 | `wallets` | Payment addresses | `bitcoin`, `lightning`, `ethereum` |
 
+<div class="caption">Table 5: Common Metadata Collections</div>
+
 #### 3.1 Semantics, Privacy, and Verification
 
 Metadata values in `m` are **claims** made by the signing identity. They are useful for discovery and UX, but they are not automatically proven.
@@ -281,12 +295,16 @@ To improve interoperability, the following conventional keys have recommended fo
 | `email` | RFC 5322 addr-spec (practically: `local@domain`) | SHOULD match `/^[^\s@]+@[^\s@]+\.[^\s@]+$/` (simple, not fully RFC-complete). |
 | `a2a` | `https://...` | Base URL of an [Agent2Agent (A2A)](https://a2a-protocol.org/) endpoint. Explorers MAY crawl the origin's `/.well-known/agent.json` to index the agent's capabilities. See AIP-10. |
 
+<div class="caption">Table 6: Links Collection Formats</div>
+
 **Collection `wallets`:**
 
 | Key | Expected format | Notes |
 |-----|------------------|------|
 | `bitcoin` | `bc1...` (or other valid Bitcoin address) | Address string. |
 | `lightning` | Lightning Address (`name@domain`) or LNURL | Prefer Lightning Address for readability. |
+
+<div class="caption">Table 7: Wallets Collection Formats</div>
 
 **Collection `keys` (informational only):**
 
@@ -295,6 +313,8 @@ To improve interoperability, the following conventional keys have recommended fo
 | `gpg` | hex fingerprint (40 hex chars) | Upper/lowercase accepted; explorers SHOULD normalise. |
 | `ssh-ed25519` | OpenSSH public key format | e.g., `ssh-ed25519 AAAA... comment`. |
 | `nostr` | npub (Nostr public key, bech32 encoded) | See AIP-11 for Nostr bridging. |
+
+<div class="caption">Table 8: Keys Collection Formats</div>
 
 Explorers SHOULD index metadata collections for search and discovery — e.g., reverse lookup by GPG fingerprint, finding agents by handle, or listing agents that accept payments.
 
@@ -311,10 +331,14 @@ All signatures in ATP use a structured format that identifies the signing key:
 }
 ```
 
+<div class="caption">Example 1: Signature Object (JSON)</div>
+
 | Field | Type | Description |
 |-------|------|-------------|
 | `f` | binary | Fingerprint of the key that produced the signature (§2.3) |
 | `sig` | binary | The signature bytes |
+
+<div class="caption">Table 9: Signature Object Fields</div>
 
 For identity documents, `s` is a single `{ f, sig }` object.
 
@@ -328,6 +352,8 @@ The `f` field MUST match the fingerprint of exactly one key in the identity's ke
 | `secp256k1` | ECDSA over secp256k1 | 64 bytes compact (r \|\| s) | 64 bytes |
 | `dilithium` | ML-DSA-65 (FIPS 204) | per FIPS 204 | 3,293 bytes |
 | `falcon` | FALCON-512 | per FALCON spec | ~666 bytes |
+
+<div class="caption">Table 10: Signature Algorithms</div>
 
 **secp256k1 note:** Signatures MUST use compact format — 32 bytes `r` concatenated with 32 bytes `s` (big-endian, unsigned). DER encoding is NOT used. This ensures consistent 64-byte signatures across implementations. The `s` value MUST be in the lower half of the curve order (low-S normalisation) to prevent malleability.
 
@@ -391,6 +417,8 @@ Documents MAY be encoded as JSON (RFC 8259) or CBOR (RFC 8949).
 | JSON | `application/atp.v1+json` | Base64url strings (unpadded) | ~280 bytes (Ed25519, single key) |
 | CBOR | `application/atp.v1+cbor` | Raw byte strings | ~170 bytes (Ed25519, single key) |
 
+<div class="caption">Table 11: Encoding Formats</div>
+
 #### 5.1 Field Encoding
 
 **In JSON:** All binary fields (public keys, signatures, fingerprints) use base64url encoding without padding (RFC 4648 §5, no `=` padding).
@@ -419,6 +447,8 @@ Creators MUST sign canonical bytes. Inscriptions MAY contain non-canonical encod
 | `s.sig` | binary | base64url string (unpadded) | byte string (major type 2) |
 | `m` | structured | object of string tuple arrays | map of text string tuple arrays |
 
+<div class="caption">Table 12: Binary Field Encoding</div>
+
 ### 6. Platform-Agnostic References (CAIP-2)
 
 ATP uses [CAIP-2](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-2.md) chain identifiers to locate documents on any supported platform. A **location reference** (`ref`) is an object with two fields:
@@ -428,6 +458,8 @@ ATP uses [CAIP-2](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-2.
 | `net` | string | CAIP-2 chain identifier |
 | `id` | string | Platform-specific document identifier |
 
+<div class="caption">Table 13: Location Reference Fields</div>
+
 **Common CAIP-2 values:**
 
 | Chain | CAIP-2 Identifier |
@@ -435,6 +467,8 @@ ATP uses [CAIP-2](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-2.
 | Bitcoin mainnet | `bip122:000000000019d6689c085ae165831e93` |
 | Bitcoin testnet3 | `bip122:000000000933ea01ad0ee984209779ba` |
 | Bitcoin signet | `bip122:00000008819873e925422c1ff0f99f7c` |
+
+<div class="caption">Table 14: CAIP-2 Chain Identifiers</div>
 
 For Bitcoin, `id` is the inscription TXID (64 hex characters, display format).
 
@@ -449,6 +483,8 @@ For Bitcoin, `id` is the inscription TXID (64 hex characters, display format).
   }
 }
 ```
+
+<div class="caption">Example 2: Identity Reference (JSON)</div>
 
 - `f` — Identity fingerprint (from `k[0]` — the WHO)
 - `ref.net` — Where the document lives (the WHERE)
@@ -476,6 +512,8 @@ OP_IF
 OP_ENDIF
 ```
 
+<div class="caption">Figure 3: Inscription Envelope</div>
+
 **Content-type:** `application/atp.v1+json` or `application/atp.v1+cbor`
 
 This custom MIME type allows indexers to identify ATP documents by content-type alone without parsing the payload. The version number in the MIME type corresponds to the `v` field inside the document (the protocol version the document was created under).
@@ -489,6 +527,8 @@ Explorers SHOULD reject documents exceeding the following advisory size limits. 
 | Tier | Document types | Max size |
 |------|---------------|----------|
 | Identity | `id`, `super` | 128 KB |
+
+<div class="caption">Table 15: Maximum Document Sizes</div>
 
 These limits account for multi-key identities with post-quantum key types. For reference, a typical single-key Ed25519 identity is ~280 bytes (JSON) or ~170 bytes (CBOR); a multi-key Ed25519+Dilithium identity is ~3.2 KB (JSON) or ~2.3 KB (CBOR).
 
@@ -534,6 +574,8 @@ flowchart TD
     M -- Yes --> N[Accept]
 ```
 
+<div class="caption">Figure 4: Identity Verification Procedure</div>
+
 1. Decode document (JSON or CBOR based on content-type)
 2. Verify `v` and `cv` are valid major.minor strings (e.g., `"1.0"`), `cv >= "1.0"`, and `cv <= v`. If the major component of `cv` > verifier's major version, reject (§4.5). For v1 documents, `v` is `"1.0"` and `cv` is `"1.0"`. Verify `t` is `"id"`.
 3. Verify `k` is an array with at least one key object. Verify no duplicate public keys.
@@ -561,6 +603,8 @@ Verification procedures produce one of the following error categories when a doc
 | `ERROR_INVALID_REFERENCE` | `ref` points to a non-ATP inscription or wrong document type |
 | `ERROR_DUPLICATE_KEY` | Same public key appears in multiple identities (§7.4) |
 | `ERROR_SIZE_EXCEEDED` | Document exceeds advisory size limits |
+
+<div class="caption">Table 16: Error Codes</div>
 
 ## Examples
 
@@ -601,6 +645,8 @@ Verification procedures produce one of the following error categories when a doc
 }
 ```
 
+<div class="caption">Example 3: Single-Key Ed25519 Identity (JSON)</div>
+
 Fingerprint (computed): `base64url_no_pad(sha256(decode_base64url(k[0].p)))` → 32 bytes (43 base64url characters).
 
 ### Example 2: Multi-Key Identity (Ed25519 + Dilithium) (JSON)
@@ -633,6 +679,8 @@ Fingerprint (computed): `base64url_no_pad(sha256(decode_base64url(k[0].p)))` →
 }
 ```
 
+<div class="caption">Example 4: Multi-Key Identity (JSON)</div>
+
 This identity holds two keys: an Ed25519 key (primary, defines the fingerprint) and a Dilithium key (secondary, for post-quantum resilience). The signature was produced by the Ed25519 key (as identified by `s.f`), but the Dilithium key could have been used instead.
 
 ### Example 3: Single-Key Ed25519 Identity (CBOR diagnostic notation)
@@ -662,6 +710,8 @@ This identity holds two keys: an Ed25519 key (primary, defines the fingerprint) 
 }
 ```
 
+<div class="caption">Example 5: Identity (CBOR Diagnostic Notation)</div>
+
 ## Implementation Considerations
 
 ### Wallet Origin is Irrelevant
@@ -687,6 +737,8 @@ Every ATP document costs real sats to inscribe. Typical costs:
 | Identity (Ed25519, single key) | ~280 bytes | ~170 bytes | $1-3 |
 | Identity (Ed25519 + Dilithium, multi-key) | ~3,200 bytes | ~2,300 bytes | $5-15 |
 | Identity (with metadata, single key) | ~450-650 bytes | ~350-500 bytes | $2-5 |
+
+<div class="caption">Table 17: Inscription Cost Estimates</div>
 
 Costs vary with Bitcoin fee rates. CBOR saves ~30-40% vs JSON by encoding binary fields as raw bytes rather than base64url strings. Multi-key identities with post-quantum keys are significantly larger due to PQ key sizes.
 
@@ -753,6 +805,8 @@ interface IdentityDocument {
   vna?: number;
 }
 ```
+
+<div class="caption">Example 6: TypeScript Interface</div>
 
 ## References
 

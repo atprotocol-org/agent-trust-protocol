@@ -168,13 +168,8 @@ Agent names MUST comply with the following rules:
 
 1. **Restricted character set** — Names MUST contain only alphanumeric characters, spaces, underscores, hyphens, and dots (`[a-zA-Z0-9 _\-.]`). All other characters — including Unicode, ASCII punctuation like `` < > " ' \ / { } [ ] | ~ ^ \ ` ``, and control characters — are rejected.
 2. **Length** — Names MUST be 1–64 characters.
-3. **Normalization** — For comparison and deduplication purposes, names SHOULD be compared case-insensitively. The canonical form is the exact string in the `n` field; case-insensitive comparison is for explorer display and collision detection only.
+3. **Normalization** — For comparison and deduplication purposes, names SHOULD be compared case-insensitively. The canonical form is the exact string in the `n` field.
 4. **No uniqueness guarantee** — ATP does not enforce name uniqueness. Multiple agents may use the same name. Identity is determined by fingerprint, not name. Names are for human convenience only.
-
-Explorers and applications SHOULD:
-- Flag visually similar names (e.g., "Shrike" and "5hrike")
-- Display the fingerprint alongside the name
-- Warn users when multiple identities share the same normalized name
 
 ### 2.0 Keys and Key Sets
 
@@ -275,8 +270,8 @@ The tuple format keeps inscriptions compact — no field name overhead per entry
 
 Metadata values in `m` are **claims** made by the signing identity. They are useful for discovery and UX, but they are not automatically proven.
 
-- **Discovery/UX** — Explorers MAY use `m` for reverse lookup (e.g., find an identity by Twitter handle) and profile display.
-- **Not self-verifying** — A handle, URL, or wallet in `m` does not prove control of that external account/address by itself. Applications SHOULD apply additional proof mechanisms if they need a "verified" badge.
+- **Discovery/UX** — Metadata enables reverse lookup (e.g., find an identity by Twitter handle) and profile display.
+- **Not self-verifying** — A handle, URL, or wallet in `m` does not prove control of that external account/address by itself. Verifiers SHOULD apply additional proof mechanisms if they need a "verified" badge.
 - **Third-party verification (attestation pattern)** — A service provider (or any verifier) MAY perform an off-chain handshake (challenge/response) to confirm control of an external identifier, then publish an ATP **attestation** to the identity indicating what was verified. See AIP-05 for attestation details.
 - **Privacy + permanence** — ATP documents are permanent. Identities SHOULD avoid embedding sensitive or personally identifying information unless they explicitly want it anchored forever.
 - **Keep it small** — Identities SHOULD keep `m` minimal to reduce inscription cost and avoid turning ATP into a generic profile database.
@@ -294,7 +289,7 @@ To improve interoperability, the following conventional keys have recommended fo
 | `website` | `https://...` | Absolute URL (HTTPS recommended). |
 | `moltbook` | `u/<username>` | Username only, not a full URL. |
 | `email` | RFC 5322 addr-spec (practically: `local@domain`) | SHOULD match `/^[^\s@]+@[^\s@]+\.[^\s@]+$/` (simple, not fully RFC-complete). |
-| `a2a` | `https://...` | Base URL of an [Agent2Agent (A2A)](https://a2a-protocol.org/) endpoint. Explorers MAY crawl the origin's `/.well-known/agent.json` to index the agent's capabilities. See AIP-10. |
+| `a2a` | `https://...` | Base URL of an [Agent2Agent (A2A)](https://a2a-protocol.org/) endpoint. See AIP-10. |
 
 <div class="caption">Table 6: Links Collection Formats</div>
 
@@ -311,13 +306,11 @@ To improve interoperability, the following conventional keys have recommended fo
 
 | Key | Expected format | Notes |
 |-----|------------------|------|
-| `gpg` | hex fingerprint (40 hex chars) | Upper/lowercase accepted; explorers SHOULD normalise. |
+| `gpg` | hex fingerprint (40 hex chars) | Upper/lowercase accepted. |
 | `ssh-ed25519` | OpenSSH public key format | e.g., `ssh-ed25519 AAAA... comment`. |
 | `nostr` | npub (Nostr public key, bech32 encoded) | See AIP-11 for Nostr bridging. |
 
 <div class="caption">Table 8: Keys Collection Formats</div>
-
-Explorers SHOULD index metadata collections for search and discovery — e.g., reverse lookup by GPG fingerprint, finding agents by handle, or listing agents that accept payments.
 
 ### 4.0 Signature Format and Creation
 
@@ -534,7 +527,7 @@ Data chunks are limited to 520 bytes each (Bitcoin script push size limit). Larg
 
 #### 7.2 Maximum Document Sizes
 
-Explorers SHOULD reject documents exceeding the following advisory size limits. These limits keep indexing costs predictable and prevent abuse while accommodating multi-key identities and post-quantum key types.
+Documents exceeding the following advisory size limits MAY be rejected. These limits keep indexing costs predictable and prevent abuse while accommodating multi-key identities and post-quantum key types.
 
 | Tier | Document types | Max size |
 |------|---------------|----------|
@@ -556,7 +549,7 @@ This rule applies across all positions in the `k` array. A key that appears as `
 
 An agent MAY have multiple valid identity inscriptions using DIFFERENT keys. Each is independent. Supersession creates an explicit chain between identities; without supersession, multiple identities for the same agent are unlinked. Agents SHOULD use supersession when rotating keys to maintain trust continuity (see AIP-02).
 
-If multiple identity documents that include the same public key are observed, explorers MUST choose a canonical owner deterministically using on-chain order:
+If multiple identity documents that include the same public key are observed, the canonical owner is determined by on-chain order:
 
 1. Lower block height wins.
 2. Within the same block, earlier transaction position wins.

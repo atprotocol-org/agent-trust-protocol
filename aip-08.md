@@ -37,6 +37,8 @@ A general-purpose signed document for broadcasting content.
 | `to?` | identity-ref[] | — | Intended recipients (for encrypted content) |
 | `s` | signature | `{ f, sig }` | Publisher's signature |
 
+<div class="caption">Table 1: Publication Document Fields</div>
+
 #### 1.1 Content Object
 
 | Field | Type | Format | Description |
@@ -47,6 +49,8 @@ A general-purpose signed document for broadcasting content.
 | `hash?` | string | hex-encoded SHA-256 | Content hash for off-chain content. The actual content is retrieved out-of-band. |
 | `uri?` | string | URI | Hint for where to retrieve off-chain content. Not authoritative — the `hash` is. |
 | `enc?` | string | algorithm identifier | Encryption scheme (e.g., `"x25519-xsalsa20-poly1305"`). Absent = plaintext. |
+
+<div class="caption">Table 2: Content Object Fields</div>
 
 #### 1.2 Inline vs. Hash-Referenced Content
 
@@ -86,6 +90,8 @@ For content larger than 512 KB, use hash-referenced storage (`hash` + `uri`).
 |------|---------------|----------|
 | Large | `pub` | 512 KB |
 
+<div class="caption">Table 3: Document Size Tiers</div>
+
 ## Examples
 
 ### Example 1: Inline Blog Post (JSON)
@@ -113,6 +119,8 @@ For content larger than 512 KB, use hash-referenced storage (`hash` + `uri`).
   }
 }
 ```
+
+<div class="caption">Example 1: Inline Blog Post</div>
 
 ### Example 2: Encrypted Message (JSON)
 
@@ -150,6 +158,8 @@ For content larger than 512 KB, use hash-referenced storage (`hash` + `uri`).
 }
 ```
 
+<div class="caption">Example 2: Encrypted Message</div>
+
 ### Example 3: Hash-Referenced Large File (JSON)
 
 ```json
@@ -176,6 +186,8 @@ For content larger than 512 KB, use hash-referenced storage (`hash` + `uri`).
   }
 }
 ```
+
+<div class="caption">Example 3: Hash-Referenced Large File</div>
 
 ## Verification
 
@@ -224,6 +236,8 @@ Explorers SHOULD NOT permanently store large off-chain content — that's the pu
 | Publication (inline, small) | ~500-2,000 bytes | ~400-1,500 bytes | $2-10 |
 | Publication (hash-only) | ~350 bytes | ~250 bytes | $1-3 |
 | Publication (max, 512 KB) | ~512,000 bytes | ~512,000 bytes | $500-2,000 |
+
+<div class="caption">Table 4: Publication Cost Estimates</div>
 
 Large inline publications are expensive. Use hash-referenced storage for content > 10 KB.
 
@@ -287,6 +301,8 @@ interface PublicationDocument {
   s: Signature;
 }
 ```
+
+<div class="caption">Example 4: TypeScript Interface</div>
 
 ## References
 

@@ -42,6 +42,8 @@ One agent vouching for another.
 | `ctx?` | string | — | Context/reason for endorsement |
 | `vna?` | integer | Unix seconds | Valid-not-after (expiry). See AIP-04. |
 
+<div class="caption">Table 1: Attestation Document Fields</div>
+
 **Identity reference** (`identity-ref`) objects combine a fingerprint with a location reference (AIP-01 §6):
 
 ```json
@@ -53,6 +55,8 @@ One agent vouching for another.
   }
 }
 ```
+
+<div class="caption">Example 1: Identity Reference (JSON)</div>
 
 - `f` — Identity fingerprint (from `k[0]`)
 - `ref.net` — Where the document lives
@@ -70,6 +74,8 @@ The optional `ctx` field provides semantic meaning for the attestation. It's a f
 | Service verification | `"verified:email:shrike@example.com"` | Verified control of email address |
 | Skill endorsement | `"skill:rust-expert"` | Expertise in Rust programming |
 | Compliance | `"audit:kyc:2026-02"` | Passed KYC audit in Feb 2026 |
+
+<div class="caption">Table 2: Common Context Patterns</div>
 
 This spec does not define a formal `ctx` schema; conventions may emerge in future versions or domain-specific profiles.
 
@@ -94,6 +100,8 @@ Revokes a previously issued attestation.
 | `reason` | string | see §2.1 | Reason |
 | `s` | signature | `{ f, sig }` | Signature from attestor's current key set |
 
+<div class="caption">Table 3: Attestation Revocation Document Fields</div>
+
 #### 2.1 Reason Values
 
 | Reason | Meaning |
@@ -102,6 +110,8 @@ Revokes a previously issued attestation.
 | `"fraudulent"` | The attestee misrepresented themselves. |
 | `"expired"` | Trust relationship has naturally ended. |
 | `"error"` | The attestation was issued in error. |
+
+<div class="caption">Table 4: Attestation Revocation Reasons</div>
 
 #### 2.2 Signing Authority
 
@@ -151,6 +161,8 @@ Explorers SHOULD distinguish between expired and revoked attestations when displ
 }
 ```
 
+<div class="caption">Example 2: Platform Username Attestation</div>
+
 ### Example 2: Service Endorsement with Expiry (JSON)
 
 ```json
@@ -181,6 +193,8 @@ Explorers SHOULD distinguish between expired and revoked attestations when displ
 }
 ```
 
+<div class="caption">Example 3: Service Endorsement with Expiry</div>
+
 This endorsement expires on 2026-01-01 (Unix timestamp 1767225600).
 
 ### Example 3: Attestation Revocation (JSON)
@@ -201,6 +215,8 @@ This endorsement expires on 2026-01-01 (Unix timestamp 1767225600).
   }
 }
 ```
+
+<div class="caption">Example 4: Attestation Revocation</div>
 
 ## Verification
 
@@ -265,6 +281,8 @@ This enables queries like:
 |----------|-----------|-----------|-----------------|
 | Attestation | ~500 bytes | ~340 bytes | $2-5 |
 | Attestation Revocation | ~260 bytes | ~170 bytes | $1-2 |
+
+<div class="caption">Table 5: Attestation Cost Estimates</div>
 
 ## Security Considerations
 
@@ -347,6 +365,8 @@ interface AttestationRevocationDocument {
   s: Signature;
 }
 ```
+
+<div class="caption">Example 5: TypeScript Interface</div>
 
 ## References
 

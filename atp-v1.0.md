@@ -58,6 +58,8 @@ For v1.0, all documents have `v: "1.0"` and `cv: "1.0"`, producing the domain se
 | **AIPs** | Independent per-AIP | Define individual mechanisms; evolve through Draft → Review → Final |
 | **Domain Separator** | Per major version | Scopes signature computation; changes only on breaking revisions |
 
+<div class="caption">Table 1: Versioning Layers</div>
+
 The specification does not replace AIPs. It assembles them. Each spec version is a snapshot: "these AIPs, at these revisions, with these rules."
 
 ---
@@ -78,6 +80,8 @@ Implementations MUST support all AIPs listed below to claim ATP v1.0 conformance
 | [AIP-06](/aips/aip-06) | Receipts | 1.0 | Irrevocable records of bilateral/multilateral exchanges |
 | [AIP-07](/aips/aip-07) | Heartbeats | 1.0 | Lightweight liveness proofs with replay protection |
 | [AIP-08](/aips/aip-08) | Publications | 1.0 | General-purpose signed content broadcast |
+
+<div class="caption">Table 2: Required AIPs for ATP v1.0</div>
 
 ---
 
@@ -125,6 +129,8 @@ ATP v1.0 defines the following document types:
 | `hb` | Heartbeat | AIP-07 |
 | `pub` | Publication | AIP-08 |
 
+<div class="caption">Table 3: Document Types</div>
+
 Conformant implementations MUST be able to verify all document types. Whether an agent chooses to *create* any given document type is its own decision.
 
 Key expiry (AIP-04) does not introduce a new document type; it adds validity window fields (`vnb`, `exp`) to identity and supersession documents.
@@ -137,6 +143,8 @@ Key expiry (AIP-04) does not introduce a new document type; it adds validity win
 | `pub` | 512 KB |
 | `rcpt` | 64 KB |
 | `att`, `att-revoke`, `revoke`, `hb` | 16 KB |
+
+<div class="caption">Table 4: Document Size Limits (Advisory)</div>
 
 These are explorer advisories. The protocol itself does not enforce size limits — Bitcoin transaction size is the ultimate constraint.
 

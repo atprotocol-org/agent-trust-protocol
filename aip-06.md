@@ -36,6 +36,8 @@ Mutually-signed record of an exchange.
 | `out` | string | see §1.3 | Outcome |
 | `s` | array | `{ f, sig }[]` — same length as `p` | All party signatures (§2) |
 
+<div class="caption">Table 1: Receipt Document Fields</div>
+
 #### 1.1 Party Object
 
 | Field | Type | Constraints | Description |
@@ -43,6 +45,8 @@ Mutually-signed record of an exchange.
 | `f` | binary | — | Identity fingerprint (from `k[0]`) |
 | `ref` | location-ref | — | Location reference (`net` + `id`) |
 | `role` | string | — | Role in exchange |
+
+<div class="caption">Table 2: Party Object Fields</div>
 
 Each party in `p` MUST have a unique fingerprint. A given agent MUST NOT appear more than once — self-dealing (same agent in multiple roles) is not a valid receipt. Receipts are multi-party documents; single-party documents serve no evidentiary purpose.
 
@@ -55,6 +59,8 @@ Common roles: `"requester"`, `"provider"`, `"buyer"`, `"seller"`, `"collaborator
 | `type` | string | — | Exchange type |
 | `sum` | string | — | Summary |
 | `val?` | integer | ≥ 0 sats | Value in sats (optional) |
+
+<div class="caption">Table 3: Exchange Object Fields</div>
 
 Common exchange types: `"service"`, `"sale"`, `"collaboration"`, `"delegation"`, `"audit"`, `"consultation"`, etc.
 
@@ -70,6 +76,8 @@ The optional `val` field records the exchange value in satoshis. Useful for econ
 | `"partial"` | Exchange was partially completed (some deliverables met, others not). |
 | `"cancelled"` | Exchange was cancelled by mutual agreement before completion. |
 | `"disputed"` | Parties disagree on whether terms were met. |
+
+<div class="caption">Table 4: Receipt Outcome Values</div>
 
 **Note:** A disputed receipt is still a valid receipt — it's an honest record that the parties couldn't agree on the outcome. Explorers SHOULD weight disputed receipts differently when computing trust scores.
 
@@ -150,6 +158,8 @@ Explorers SHOULD display receipt history chronologically and note when receipts 
 }
 ```
 
+<div class="caption">Example 1: Service Receipt</div>
+
 ### Example: Disputed Exchange (JSON)
 
 ```json
@@ -194,6 +204,8 @@ Explorers SHOULD display receipt history chronologically and note when receipts 
 }
 ```
 
+<div class="caption">Example 2: Disputed Exchange</div>
+
 Both parties signed, acknowledging the exchange occurred and that they disagree on the outcome. This is an honest record.
 
 ## Verification
@@ -229,6 +241,8 @@ This enables queries like:
 | Document | JSON Size | CBOR Size | Est. Cost (USD) |
 |----------|-----------|-----------|-----------------|
 | Receipt (2 party, Ed25519) | ~620 bytes | ~430 bytes | $2-5 |
+
+<div class="caption">Table 5: Receipt Cost Estimates</div>
 
 Multi-party receipts (3+ parties) are larger due to additional party objects and signatures.
 
@@ -307,6 +321,8 @@ interface ReceiptDocument {
   s: Signature[];
 }
 ```
+
+<div class="caption">Example 3: TypeScript Interface</div>
 
 ## References
 

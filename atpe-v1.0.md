@@ -42,6 +42,8 @@ ATPe covers:
 | **ATP v1.0** | Core protocol (documents, signatures, identity lifecycle) | AIP-01 through AIP-08 |
 | **ATPe v1.0** | Explorer layer (indexing, verification, API, trust) | AIP-09, plus references to AIP-01–AIP-08 and AIP-10 |
 
+<div class="caption">Table 1: Specification Scope</div>
+
 ATPe does not replace or supersede any AIPs. It assembles them into an implementable specification, exactly as ATP v1.0 does for the core protocol.
 
 ---
@@ -61,6 +63,8 @@ ATPe follows semantic versioning at the major.minor level, independent of the co
 |--------------|-------------------|-------------|
 | ATPe v1.0 | ATP v1.x | Initial release |
 
+<div class="caption">Table 2: ATPe/ATP Compatibility Matrix</div>
+
 Each ATPe release declares which ATP versions it is compatible with. ATPe v1.0 requires ATP v1.x documents and verification rules.
 
 ---
@@ -72,6 +76,8 @@ Each ATPe release declares which ATP versions it is compatible with. ATPe v1.0 r
 | AIP | Title | Revision | Role in ATPe |
 |-----|-------|----------|-------------|
 | [AIP-09](/aips/aip-09) | Explorer API | 1.0 | **Primary.** Indexing, chain state verification, API patterns, trust scoring, security, fork handling |
+
+<div class="caption">Table 3: Assembled AIPs</div>
 
 ### 3.2 Referenced AIPs (from ATP v1.0)
 
@@ -88,6 +94,8 @@ ATPe implementations MUST understand all ATP v1.0 document types in order to ind
 | [AIP-07](/aips/aip-07) | Heartbeats | Liveness tracking |
 | [AIP-08](/aips/aip-08) | Publications | Publication caching and indexing |
 
+<div class="caption">Table 4: Referenced AIPs (from ATP v1.0)</div>
+
 ### 3.3 Extension AIPs
 
 The following AIPs are not part of ATPe but are designed to interoperate with it:
@@ -96,6 +104,8 @@ The following AIPs are not part of ATPe but are designed to interoperate with it
 |-----|-------|--------------------|
 | [AIP-10](/aips/aip-10) | A2A Integration | A2A agent card crawling and capability indexing |
 | [AIP-11](/aips/aip-11) | Nostr Identity Bridging | Cross-protocol identity resolution |
+
+<div class="caption">Table 5: Extension AIPs</div>
 
 ---
 
@@ -157,6 +167,8 @@ ATPe v1.0 defines conventional HTTP API patterns in [AIP-09](/aips/aip-09) §2. 
 | `GET /identity/<fp>/publications` | Publication feed |
 | `GET /search?q=<query>` | Full-text and metadata search |
 
+<div class="caption">Table 6: API Endpoint Conventions</div>
+
 These are conventions, not mandates. Explorers MAY extend or adapt these patterns.
 
 ---
@@ -195,6 +207,8 @@ See [AIP-09](/aips/aip-09) §8 and the Security Considerations section for the c
 | `pub` | 512 KB |
 | `rcpt` | 64 KB |
 | `att`, `att-revoke`, `revoke`, `hb` | 16 KB |
+
+<div class="caption">Table 7: Document Size Advisories</div>
 
 The protocol itself does not enforce size limits — Bitcoin transaction size is the ultimate constraint. These are explorer-level advisories per [AIP-09](/aips/aip-09).
 

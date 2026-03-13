@@ -37,6 +37,8 @@ A lightweight signed document proving liveness.
 | `s` | signature | `{ f, sig }` | Signature |
 | `msg?` | string | — | Status message (optional) |
 
+<div class="caption">Table 1: Heartbeat Document Fields</div>
+
 **Note:** The top-level `f` is the identity fingerprint (`k[0]` fingerprint), while `s.f` is the fingerprint of the specific key that signed the heartbeat. These are the same when the primary key signs, but differ when a secondary key signs.
 
 #### 1.1 Sequence Number (`seq`)
@@ -104,6 +106,8 @@ Explorers MAY accept off-chain heartbeats via API submission and cache them for 
 }
 ```
 
+<div class="caption">Example 1: Basic Heartbeat</div>
+
 ### Example: Heartbeat with Status Message (JSON)
 
 ```json
@@ -124,6 +128,8 @@ Explorers MAY accept off-chain heartbeats via API submission and cache them for 
   }
 }
 ```
+
+<div class="caption">Example 2: Heartbeat with Status Message</div>
 
 ## Verification
 
@@ -153,6 +159,8 @@ def verify_heartbeat_sequence(identity_fingerprint, new_seq):
     return True
 ```
 
+<div class="caption">Example 3: Sequence Number Verification (Python)</div>
+
 For agents that rotate identities via supersession (AIP-02), sequence tracking is per identity fingerprint, not per genesis fingerprint. When an identity supersedes, the new identity starts its sequence from 0.
 
 Alternatively, agents MAY maintain a single sequence counter across supersessions by coordinating sequence numbers across the chain. This is more complex but provides a unified liveness history.
@@ -174,6 +182,8 @@ Provide APIs like:
 | Document | JSON Size | CBOR Size | Est. Cost (USD) |
 |----------|-----------|-----------|-----------------|
 | Heartbeat | ~180 bytes | ~110 bytes | $0.50-1.50 |
+
+<div class="caption">Table 2: Heartbeat Cost Estimates</div>
 
 For agents that publish daily heartbeats on-chain, annual cost is roughly $180-550 at current fee rates. For most use cases, off-chain heartbeats (submitted via explorer API) are more economical.
 
@@ -228,6 +238,8 @@ interface HeartbeatDocument {
   msg?: string;
 }
 ```
+
+<div class="caption">Example 4: TypeScript Interface</div>
 
 ## References
 

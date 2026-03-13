@@ -35,7 +35,7 @@ Replaces an existing identity with a new one. The supersession document IS the n
 | `n` | string | 1–64 chars, `[a-zA-Z0-9 _\-.]` | New agent name (AIP-01 §1.1) |
 | `k` | array | 1+ key objects, no duplicate public keys | New key set |
 | `reason` | string | see §1.1 | Reason for supersession |
-| `s` | array | exactly 2 `{ f, sig }` objects | Old + new identity signatures (§2) |
+| `s` | array | 1 old + n new signatures (n = len(k)) | Old identity authorizes + all new keys sign (§2) |
 | `m?` | object | — | Structured metadata (AIP-01 §3) |
 | `vnb?` | integer | Unix seconds | Valid-not-before for this supersession (scheduled rollover). See AIP-04. |
 | `vna?` | integer | Unix seconds | Valid-not-after for the resulting key set (expiry). See AIP-04. |
@@ -57,23 +57,29 @@ When a document references an identity via `ref`, the resolved inscription may h
 
 <div class="caption">Table 2: Supersession Reasons</div>
 
-### 2.0 Dual Signature Requirement
+### 2.0 Multi-Signature Requirement
 
-The `s` array contains exactly 2 `{ f, sig }` objects in **canonical order**:
+The `s` array contains signatures in **canonical order**:
 
-- `s[0]` — signature from the **old** identity (any key from the old key set). Authorises the handoff.
-- `s[1]` — signature from the **new** identity (any key from the new key set). Accepts the handoff.
+- `s[0]` — signature from the **old** identity (any key from the old key set). Authorizes the handoff.
+- `s[1..n]` — signatures from **all keys in the new key set**. Proves ownership of all new keys.
 
-This ordering is normative. Implementations MUST place the old identity's signature first and the new identity's signature second. Verifiers MUST reject supersession documents where `s[0].f` does not match a key in the old identity's `k` array, or `s[1].f` does not match a key in the new identity's `k` array.
+Where n = `len(k)`, the total length of `s` is `1 + len(k)`.
+
+This ordering is normative:
+1. First signature (`s[0]`) MUST be from the old identity
+2. Remaining signatures (`s[1..n]`) MUST cover all keys in the new `k[]` array
+3. Verifiers MUST reject if `s[0].f` does not match a key in the old identity, or if any new key lacks a corresponding signature
 
 **Co-signing procedure:**
 
 1. Construct the complete supersession document with all fields EXCEPT `s`
-2. Both parties independently sign the same unsigned document per AIP-01 §4.3
-3. Collect both signatures into the `s` array in canonical order: `[old_sig, new_sig]`
-4. Re-encode the complete document for inscription
+2. Old identity signs the unsigned document per AIP-01 §4.3 → `s[0]`
+3. Each new key signs the same unsigned document → `s[1..n]`
+4. Collect all signatures into `s` in canonical order
+5. Re-encode the complete document for inscription
 
-For metadata-only updates where the old and new key sets are identical, both signatures may be from the same key. For deterministic signature algorithms (Ed25519, secp256k1), the signatures will be identical — this is expected and valid. Verifiers MUST verify each signature independently but MUST NOT reject solely because `s[0]` and `s[1]` are identical when the signing keys overlap.
+For keys that exist in both old and new key sets, the key must still sign as part of the new key set. This is intentionally redundant — it provides a consistent rule (all new keys sign) and confirms continued possession of carried-forward keys.
 
 ### 3.0 Permanence and Uniqueness
 
@@ -139,7 +145,8 @@ An identity can carry keys forward across supersessions (e.g., keeping the same 
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "ref": {
       "net": "bip122:000000000019d6689c085ae165831e93",
-      "id": "6ffcca0cc29da514e784b27155e68c3d4c1ca2deeb6dc9ce020a4d7e184eaa1c"
+      "id": "6ffcca0cc29da514e784b27155e68c3d4c1ca2deeb6dc9ce020a4d7e184eaa1c",
+      "did": "Qm7xR2kL9mN3pS5tV8wY1zA4bC6dE9fG2hJ4kM6nP8qR0s"
     }
   },
   "n": "Shrike",
@@ -184,7 +191,8 @@ An identity can carry keys forward across supersessions (e.g., keeping the same 
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "ref": {
       "net": "bip122:000000000019d6689c085ae165831e93",
-      "id": "6ffcca0cc29da514e784b27155e68c3d4c1ca2deeb6dc9ce020a4d7e184eaa1c"
+      "id": "6ffcca0cc29da514e784b27155e68c3d4c1ca2deeb6dc9ce020a4d7e184eaa1c",
+      "did": "Qm7xR2kL9mN3pS5tV8wY1zA4bC6dE9fG2hJ4kM6nP8qR0s"
     }
   },
   "n": "Shrike",
@@ -202,11 +210,15 @@ An identity can carry keys forward across supersessions (e.g., keeping the same 
   "s": [
     {
       "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
-      "sig": "<86 base64url characters - old Ed25519 key signature>"
+      "sig": "<86 base64url characters - old Ed25519 key authorizes>"
     },
     {
       "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
-      "sig": "<86 base64url characters - new Ed25519 key signature (same key carried forward)>"
+      "sig": "<86 base64url characters - new Ed25519 key (k[0]) proves ownership>"
+    },
+    {
+      "f": "pQ7kM3nR5sT8vW2xY4zA6bC9dE1fG3hI5jK7lN0oP2q",
+      "sig": "<4,391 base64url characters - new Dilithium key (k[1]) proves ownership>"
     }
   ]
 }
@@ -214,7 +226,7 @@ An identity can carry keys forward across supersessions (e.g., keeping the same 
 
 <div class="caption">Example 2: Adding a Dilithium Key</div>
 
-In this example, the Ed25519 key is carried forward into the new identity (same key, now `k[0]`), and a Dilithium key is added as `k[1]`. Both signatures are from the Ed25519 key since it appears in both the old and new key sets. The identity fingerprint remains unchanged because `k[0]` is the same key.
+In this example, the Ed25519 key is carried forward into the new identity (same key, now `k[0]`), and a Dilithium key is added as `k[1]`. Three signatures are required: one from the old identity to authorize the supersession, plus one from each key in the new key set to prove ownership. The Ed25519 signature appears twice (old + new) — for deterministic algorithms these will be identical, which is valid.
 
 ### Example 3: Metadata Update (JSON)
 
@@ -227,7 +239,8 @@ In this example, the Ed25519 key is carried forward into the new identity (same 
     "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
     "ref": {
       "net": "bip122:000000000019d6689c085ae165831e93",
-      "id": "6ffcca0cc29da514e784b27155e68c3d4c1ca2deeb6dc9ce020a4d7e184eaa1c"
+      "id": "6ffcca0cc29da514e784b27155e68c3d4c1ca2deeb6dc9ce020a4d7e184eaa1c",
+      "did": "Qm7xR2kL9mN3pS5tV8wY1zA4bC6dE9fG2hJ4kM6nP8qR0s"
     }
   },
   "n": "Stalker",
@@ -383,6 +396,13 @@ interface SupersessionDocument {
 - [AIP-04: Key Expiry & Validity Windows](./aip-04.md)
 
 ## Changelog
+
+### 1.1 (2026-03-13)
+
+- **Breaking:** `s` array now requires 1 old + n new signatures (n = len(k))
+- All keys in new key set MUST sign to prove ownership
+- Added `did` field to references for content-addressed document IDs (AIP-01 §8)
+- Updated examples to show multi-signature format
 
 ### 1.0 (2026-02-16)
 

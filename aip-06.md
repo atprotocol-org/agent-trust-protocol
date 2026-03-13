@@ -126,7 +126,8 @@ Explorers SHOULD display receipt history chronologically and note when receipts 
       "f": "xK3jL9mN1qQ9pE4tU6u1fGRjwNWwtnQd4fG4eISeI6s",
       "ref": {
         "net": "bip122:000000000019d6689c085ae165831e93",
-        "id": "6ffcca0cc29da514e784b27155e68c3d4c1ca2deeb6dc9ce020a4d7e184eaa1c"
+        "id": "6ffcca0cc29da514e784b27155e68c3d4c1ca2deeb6dc9ce020a4d7e184eaa1c",
+        "did": "Qm7xR2kL9mN3pS5tV8wY1zA4bC6dE9fG2hJ4kM6nP8qR0s"
       },
       "role": "requester"
     },
@@ -134,7 +135,8 @@ Explorers SHOULD display receipt history chronologically and note when receipts 
       "f": "aBtxA94XweOEmkvNbrfw-KGbLA1OX2p7jJ0OHyoLTF0",
       "ref": {
         "net": "bip122:000000000019d6689c085ae165831e93",
-        "id": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2"
+        "id": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
+        "did": "Xn9yT4uK1mP6qS3wZ8vA2bD5eH7gJ0iL9kN2oR5sU7wY"
       },
       "role": "provider"
     }
@@ -172,7 +174,8 @@ Explorers SHOULD display receipt history chronologically and note when receipts 
       "f": "buyer-fingerprint",
       "ref": {
         "net": "bip122:000000000019d6689c085ae165831e93",
-        "id": "buyer-identity-txid"
+        "id": "buyer-identity-txid",
+        "did": "buyer-identity-doc-id"
       },
       "role": "buyer"
     },
@@ -180,7 +183,8 @@ Explorers SHOULD display receipt history chronologically and note when receipts 
       "f": "seller-fingerprint",
       "ref": {
         "net": "bip122:000000000019d6689c085ae165831e93",
-        "id": "seller-identity-txid"
+        "id": "seller-identity-txid",
+        "did": "seller-identity-doc-id"
       },
       "role": "seller"
     }
@@ -329,6 +333,11 @@ interface ReceiptDocument {
 - [AIP-01: Identity Documents & Signing](./aip-01.md)
 
 ## Changelog
+
+### 1.1 (2026-03-13)
+
+- Added `did` field to party references for content-addressed document IDs (AIP-01 §8)
+- Updated examples to include `did` in identity references
 
 ### 1.0 (2026-02-16)
 
